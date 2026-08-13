@@ -1,6 +1,6 @@
 # CodeSentinel
 
-![CI](https://github.com/YOUR_USERNAME/codesentinel/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/Nitin-Chaudhary-081/codesentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/Nitin-Chaudhary-081/codesentinel/actions/workflows/ci.yml)
 
 > Production-grade AI-powered code review and evaluation platform.
 > Full Stack: Next.js 15 (TypeScript) + Flask 3.1 (Python) + PostgreSQL
@@ -31,9 +31,10 @@ JSONL, making the results directly reusable as high-quality AI training data.
 
 ### Prerequisites
 
-- Python 3.11+
+- Python 3.14+
 - Node.js 18+
-- PostgreSQL running locally
+- SQLite (default, built-in — no setup needed)
+- PostgreSQL (optional — set DATABASE_URL in .env to switch)
 
 ### Backend
 
