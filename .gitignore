@@ -9,10 +9,9 @@ out/
 dist/
 build/
 
-# Environment
-.env
-.env.local
-.env.*.local
+# Environment files
+.env*
+!.env.example
 
 # Database
 *.db
