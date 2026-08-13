@@ -62,18 +62,27 @@
 
 ### Error Responses
 
-All errors follow the RFC 7807 format:
+All errors use a consistent envelope (not RFC 7807):
 ```json
 {
-  "detail": "Description of the error"
+  "status": "error",
+  "error_type": "validation_error",
+  "message": "Code is required",
+  "details": {}
 }
 ```
 
-| Status | Meaning |
-|--------|---------|
-| 400 | Bad request |
-| 401 | Unauthorized (missing/invalid token) |
-| 404 | Resource not found |
-| 409 | Conflict (duplicate email) |
-| 422 | Validation error |
-| 500 | Internal server error |
+| Status | `error_type` | Meaning |
+|--------|--------------|---------|
+| 400 | `validation_error` | Missing/invalid field (e.g. empty code, bad email, short password) |
+| 400 | `unsupported_language` | Language not in the supported set |
+| 401 | `unauthorized` | Missing or invalid bearer token |
+| 404 | `not_found` | Submission or evaluation not found |
+| 409 | `conflict` | Email already registered |
+| 422 | `syntax_error` / `type_error` | Static analysis failure |
+| 429 | `rate_limited` | Too many auth attempts |
+| 500 | `server_error` / `analysis_failed` | Unexpected server/analysis error |
+
+> Note: This is a Flask application, so there is no auto-served `/docs`
+> OpenAPI endpoint. This document is the authoritative contract. A future
+> FastAPI migration could auto-generate `/openapi.json` and `/docs`.

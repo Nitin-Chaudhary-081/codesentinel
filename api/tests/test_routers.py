@@ -3,6 +3,7 @@
 import pytest
 from src.app import create_app
 from src.database import engine, Base
+from src.blueprints.auth import _reset_rate_limits
 
 
 @pytest.fixture
@@ -19,8 +20,10 @@ def client(app):
 @pytest.fixture(autouse=True)
 def setup_db():
     Base.metadata.create_all(engine)
+    _reset_rate_limits()
     yield
     Base.metadata.drop_all(engine)
+    _reset_rate_limits()
 
 
 def test_register(client):
@@ -124,3 +127,35 @@ def test_health(client):
     resp = client.get("/health")
     assert resp.status_code == 200
     assert resp.get_json()["status"] == "ok"
+
+
+def test_login_rate_limit_blocks_after_max(client):
+    """Repeated failed logins from one client must be throttled."""
+    for _ in range(20):
+        resp = client.post("/api/v1/auth/login", json={
+            "email": "ratelimit@example.com",
+            "password": "wrongpass",
+        })
+        assert resp.status_code in (401, 429)
+    resp = client.post("/api/v1/auth/login", json={
+        "email": "ratelimit@example.com",
+        "password": "wrongpass",
+    })
+    assert resp.status_code == 429
+    assert resp.get_json()["error_type"] == "rate_limited"
+
+
+def test_jwt_secret_rejects_default_and_empty():
+    from src.config import Settings
+
+    empty = Settings()
+    empty.jwt_secret = ""
+    assert empty.jwt_configured is False
+
+    default = Settings()
+    default.jwt_secret = "change-me-in-production"
+    assert default.jwt_configured is False
+
+    strong = Settings()
+    strong.jwt_secret = "a-strong-non-default-secret"
+    assert strong.jwt_configured is True

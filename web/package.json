@@ -8,14 +8,16 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
-    "next": "14.2.15",
+    "next": "15.5.23",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@testing-library/jest-dom": "6.4.8",
     "@testing-library/react": "16.0.1",
     "@types/babel__core": "^7.20.5",
@@ -27,5 +29,9 @@
     "jest-environment-jsdom": "29.7.0",
     "ts-jest": "^29.4.12",
     "typescript": "5.4.5"
+  },
+  "overrides": {
+    "postcss": "^8.5.3",
+    "sharp": "^0.35.0"
   }
 }

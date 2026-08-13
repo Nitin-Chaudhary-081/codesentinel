@@ -1,8 +1,10 @@
 """Tests for the evaluation engine."""
 
+import time
+
 import pytest
 
-from src.evaluation.engine import evaluate_code
+from src.evaluation.engine import evaluate_code, _collect_function_types
 from src.errors import CodeSyntaxError
 
 
@@ -114,3 +116,23 @@ class TestGenericEvaluation:
         for key, val in scores.items():
             if isinstance(val, int):
                 assert 1 <= val <= 10, f"{key}={val} out of range"
+
+
+class TestRegexSafety:
+    def test_collect_function_types_no_redos(self):
+        """A long string of balanced parens with no '=>' must not cause
+        catastrophic backtracking (CWE-1333)."""
+        code = "const x = " + "()." * 100 + "z"
+        start = time.time()
+        _collect_function_types(code)
+        elapsed = time.time() - start
+        assert elapsed < 0.5, f"regex took {elapsed:.2f}s (possible ReDoS)"
+
+    def test_collect_function_types_detects_types(self):
+        code = (
+            "function add(a: number, b: number): number { return a + b; }\n"
+            "const greet = (name: string) => name;\n"
+        )
+        types = _collect_function_types(code)
+        assert types.get("add") == ["number", "number"]
+        assert types.get("greet") == ["string"]

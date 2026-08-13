@@ -37,6 +37,21 @@ def run_evaluation(submission_id: int):
         if not submission:
             return jsonify({"status": "error", "error_type": "not_found", "message": "Submission not found"}), 404
 
+        existing = db.query(Evaluation).filter(
+            Evaluation.submission_id == submission.id
+        ).first()
+        if existing:
+            return jsonify({
+                "status": "ok",
+                "data": {
+                    **evaluation_to_dict(existing),
+                    "language": submission.language.value,
+                    "analysis_status": "ok",
+                    "syntax_valid": True,
+                    "message": "Analysis already completed",
+                },
+            })
+
         submission.status = SubmissionStatus.PROCESSING
         db.commit()
 

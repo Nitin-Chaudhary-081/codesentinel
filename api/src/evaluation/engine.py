@@ -55,15 +55,22 @@ def _collect_function_types(code: str) -> dict[str, list[str]]:
     """
     func_types: dict[str, list[str]] = {}
 
-    single_line = re.findall(
-        r"(?:function\s+(\w+)|const\s+(\w+)\s*=\s*(?:async\s*)?(?:\([^)]*\)|[^=])*=>)\s*\(([^)]*)\)\s*(?::\s*\w+)?",
-        code,
+    single_decls = []
+    single_decls.extend(
+        (m[0], m[1])
+        for m in re.findall(
+            r"function\s+(\w+)\s*\(([^)]*)\)\s*(?::\s*\w+)?", code
+        )
     )
-    for match in single_line:
-        func_name = match[0] or match[1]
+    for m in re.findall(
+        r"const\s+(\w+)\s*=\s*(?:async\s*)?\s*(?:\(([^)]*)\)|([A-Za-z_$]\w*))\s*=>",
+        code,
+    ):
+        single_decls.append((m[0], m[1] if m[1] is not None else m[2]))
+
+    for func_name, params_str in single_decls:
         if not func_name:
             continue
-        params_str = match[2]
         types = []
         for param in params_str.split(","):
             param = param.strip()

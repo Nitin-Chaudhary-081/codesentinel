@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { api, Evaluation, Submission } from "@/lib/api";
+import { api, Evaluation, Submission, ApiError } from "@/lib/api";
 
 export default function ReportViewer({
   submissionId,
@@ -31,7 +31,7 @@ export default function ReportViewer({
       const result = await api.runEvaluation(submissionId, token);
       setEvaluation(result);
     } catch (err) {
-      const apiErr = (err as Error & { apiError?: { error_type: string; message: string; details?: Record<string, unknown>; data?: { error?: { error_type: string; message: string; details?: Record<string, unknown> } } } }).apiError;
+      const apiErr = (err as Error & { apiError?: ApiError }).apiError;
       if (apiErr) {
         const innerError = apiErr.data?.error;
         setError({
@@ -152,6 +152,7 @@ export default function ReportViewer({
 }
 
 function ScoreRadar({ scores, overall }: { scores: Evaluation["scores"]; overall: number | null }) {
+  if (!scores) return null;
   return (
     <div className="mb-6">
       <div className="text-center mb-4">
@@ -177,6 +178,7 @@ function ScoreRadar({ scores, overall }: { scores: Evaluation["scores"]; overall
 }
 
 function FeedbackSection({ feedback }: { feedback: Evaluation["feedback"] }) {
+  if (!feedback) return null;
   return (
     <div className="space-y-3">
       {feedback.issues?.length > 0 && (
