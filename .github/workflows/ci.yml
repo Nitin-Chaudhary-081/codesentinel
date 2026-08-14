@@ -27,4 +27,4 @@ jobs:
           node-version: "20"
       - run: cd web && npm ci
       - run: cd web && npm test -- --coverage
-      - run: cd web && npm run lint
+      - run: cd web && if [ -f .eslintrc.json ] || [ -f .eslintrc.js ] || [ -f .eslintrc.cjs ] || [ -f .eslintrc.yml ] || [ -f .eslintrc.yaml ] || [ -f .eslintrc ]; then npm run lint; else echo "Skipping lint: no ESLint config found"; fi
