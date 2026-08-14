@@ -11,20 +11,67 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: cd api && pip install -r requirements.txt
-      - run: cd api && pytest --cov=src --cov-report=xml
-      - run: cd api && ruff check src tests
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('api/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: cd api && pip install -r requirements.txt
+      
+      - name: Run linter
+        run: cd api && ruff check src tests
+      
+      - name: Run tests with coverage
+        run: cd api && pytest --cov=src --cov-report=xml --cov-report=html
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./api/coverage.xml
+          flags: backend
+          fail_ci_if_error: false
 
   frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: cd web && npm ci
-      - run: cd web && npm test -- --coverage
-      - run: cd web && if [ -f .eslintrc.json ] || [ -f .eslintrc.js ] || [ -f .eslintrc.cjs ] || [ -f .eslintrc.yml ] || [ -f .eslintrc.yaml ] || [ -f .eslintrc ]; then npm run lint; else echo "Skipping lint: no ESLint config found"; fi
+      
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('web/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      
+      - name: Install dependencies
+        run: cd web && npm ci
+      
+      - name: Run linter
+        run: cd web && npm run lint
+      
+      - name: Run tests with coverage
+        run: cd web && npm test -- --coverage --watchAll=false
+      
+      - name: Build
+        run: cd web && npm run build
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./web/coverage/coverage-final.json
+          flags: frontend
+          fail_ci_if_error: false
