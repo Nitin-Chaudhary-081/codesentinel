@@ -24,6 +24,8 @@ coverage/
 __pycache__/
 *.pyc
 htmlcov/
+.coverage
+test-results/
 
 # IDE
 .vscode/

@@ -2,7 +2,9 @@
 
 import os
 import sys
+from dotenv import load_dotenv
 
+load_dotenv()
 
 TESTING = os.getenv("CODESENTINEL_TESTING") == "1" or "pytest" in sys.modules
 
