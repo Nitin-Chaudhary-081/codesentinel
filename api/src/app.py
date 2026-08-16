@@ -15,11 +15,14 @@ def create_app() -> Flask:
 
     CORS(app, origins=settings.cors_origins, supports_credentials=True)
 
-    from src.blueprints import auth, submissions, evaluations, reports
-    app.register_blueprint(auth.bp, url_prefix="/api/v1/auth")
-    app.register_blueprint(submissions.bp, url_prefix="/api/v1/submissions")
-    app.register_blueprint(evaluations.bp, url_prefix="/api/v1/evaluations")
-    app.register_blueprint(reports.bp, url_prefix="/api/v1/reports")
+    from src.blueprints.auth import bp as auth_bp
+    from src.blueprints.submissions import bp as submissions_bp
+    from src.blueprints.evaluations import bp as evaluations_bp
+    from src.blueprints.reports import bp as reports_bp
+    app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
+    app.register_blueprint(submissions_bp, url_prefix="/api/v1/submissions")
+    app.register_blueprint(evaluations_bp, url_prefix="/api/v1/evaluations")
+    app.register_blueprint(reports_bp, url_prefix="/api/v1/reports")
 
     @app.route("/health", methods=["GET"])
     def health():
