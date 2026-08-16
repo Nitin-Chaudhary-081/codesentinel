@@ -1,10 +1,9 @@
 """Reports blueprint — export evaluation reports in multiple formats."""
 
 from flask import Blueprint, request, jsonify, Response
-from sqlalchemy import select
 
 from src.database import get_db
-from src.models import Evaluation, Submission, User
+from src.models import Evaluation, Submission
 from src.blueprints.submissions import get_current_user
 from src.reports.generator import generate_jsonl, generate_markdown
 

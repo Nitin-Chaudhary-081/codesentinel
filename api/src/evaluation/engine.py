@@ -269,7 +269,7 @@ def _analyze_typescript_javascript(code: str) -> tuple[dict[str, int], dict]:
 
     lines = code.split("\n")
     func_count = len(re.findall(r"(function\s+\w+|const\s+\w+\s*=\s*\(|=>\s*\{|\w+\s*\(.*\)\s*\{)", code))
-    avg_len = sum(len(l) for l in lines) / max(len(lines), 1)
+    avg_len = sum(len(line) for line in lines) / max(len(lines), 1)
 
     complexity = _clamp(10 - func_count // 2 - code.count("if ") // 3)
     naming = _clamp(8 if re.search(r"[a-z][a-zA-Z\d]*\s*[=:(]", code) else 5)
@@ -338,7 +338,6 @@ def _analyze_java(code: str) -> tuple[dict[str, int], dict]:
             column=1,
         )
 
-    has_try = "try" in code and "catch" in code
     class_count = len(re.findall(r"class\s+\w+", code))
     has_generics = "<" in code and ">" in code
 
@@ -372,7 +371,6 @@ def _analyze_cpp(code: str) -> tuple[dict[str, int], dict]:
         )
 
     has_smart_ptr = "unique_ptr" in code or "shared_ptr" in code
-    has_try = "try" in code and "catch" in code
     has_nullptr = "nullptr" in code
 
     complexity = _clamp(10 - code.count("for ") // 2 - code.count("while ") // 2)
@@ -489,7 +487,7 @@ def _check_security_python(code: str, feedback: dict) -> int:
 
 
 def _check_duplication(code: str, feedback: dict) -> int:
-    lines = [l.strip() for l in code.split("\n") if l.strip() and not l.strip().startswith("#") and not l.strip().startswith("//")]
+    lines = [line.strip() for line in code.split("\n") if line.strip() and not line.strip().startswith("#") and not line.strip().startswith("//")]
     if not lines:
         return 10
     counter = Counter(lines)
@@ -502,8 +500,7 @@ def _check_duplication(code: str, feedback: dict) -> int:
 
 def _calc_maintainability(code: str, complexity_score: int) -> int:
     lines = code.split("\n")
-    avg_len = sum(len(l) for l in lines) / max(len(lines), 1)
-    long_lines = sum(1 for l in lines if l.rstrip() and len(l.rstrip()) > 100)
+    long_lines = sum(1 for line in lines if line.rstrip() and len(line.rstrip()) > 100)
     score = _clamp((complexity_score + 10) // 2 - long_lines)
     return max(score, 1)
 

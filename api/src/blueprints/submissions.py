@@ -1,10 +1,9 @@
 """Submissions blueprint — create, list, retrieve code submissions."""
 
 from flask import Blueprint, request, jsonify
-from sqlalchemy import select
 
 from src.database import get_db
-from src.models import Language, Submission, SubmissionStatus, User
+from src.models import Language, Submission, User
 from src.auth import decode_token
 from src.errors import UnsupportedLanguageError
 

@@ -1,13 +1,11 @@
 """Authentication blueprint — register, login, token management."""
 
-import os
 import re
 import time
 import uuid
 from collections import defaultdict
 
 from flask import Blueprint, request, jsonify
-from sqlalchemy import select
 
 from src.database import get_db
 from src.models import User

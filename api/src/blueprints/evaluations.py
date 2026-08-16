@@ -1,13 +1,12 @@
 """Evaluations blueprint — trigger and retrieve code evaluations."""
 
-from flask import Blueprint, request, jsonify
-from sqlalchemy import select
+from flask import Blueprint, jsonify
 
 from src.database import get_db
 from src.evaluation.engine import evaluate_code
-from src.models import Evaluation, Submission, SubmissionStatus, User
-from src.blueprints.submissions import get_current_user, submission_to_dict
-from src.errors import AnalysisError, CodeSyntaxError, CodeTypeError, UnsupportedLanguageError
+from src.models import Evaluation, Submission, SubmissionStatus
+from src.blueprints.submissions import get_current_user
+from src.errors import CodeSyntaxError, CodeTypeError, UnsupportedLanguageError
 
 bp = Blueprint("evaluations", __name__)
 

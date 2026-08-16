@@ -125,7 +125,7 @@ def test_export_markdown(client):
 
 def test_export_not_found(client):
     token = _auth(client)
-    resp = client.get(f"/api/v1/reports/9999/export", headers={"Authorization": f"Bearer {token}"})
+    resp = client.get("/api/v1/reports/9999/export", headers={"Authorization": f"Bearer {token}"})
     assert resp.status_code == 404
 
 
