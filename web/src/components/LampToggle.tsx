@@ -13,97 +13,88 @@ export default function LampToggle({
       onClick={onToggle}
       aria-label={on ? "Turn lamp off" : "Turn lamp on"}
       aria-pressed={on}
-      className="group mb-4 flex flex-col items-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-lg"
+      className="group relative cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70 rounded-xl"
     >
-      <svg
-        width="120"
-        height="170"
-        viewBox="0 0 120 170"
-        role="img"
-        aria-label={on ? "Lamp is on" : "Lamp is off"}
-        className="lamp-svg"
-      >
-        <defs>
-          <radialGradient id="lamp-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#fde68a" stopOpacity="0.85" />
-            <stop offset="60%" stopColor="#f59e0b" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="shade-on" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#fbbf24" />
-            <stop offset="100%" stopColor="#d97706" />
-          </linearGradient>
-          <linearGradient id="shade-off" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#475569" />
-            <stop offset="100%" stopColor="#1e293b" />
-          </linearGradient>
-        </defs>
+      <span className={`lamp-wrap block transition-opacity duration-700 ${on ? "opacity-100" : "opacity-60"}`}>
+        <svg
+          width="200"
+          height="240"
+          viewBox="0 0 200 240"
+          role="img"
+          aria-label={on ? "Lamp is on" : "Lamp is off"}
+          className="lamp-svg"
+        >
+          <defs>
+            <linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#d4a017" />
+              <stop offset="0.45" stopColor="#9c6b12" />
+              <stop offset="1" stopColor="#5b3a0d" />
+            </linearGradient>
+            <linearGradient id="brassShade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#e3b84f" />
+              <stop offset="0.5" stopColor="#a8791a" />
+              <stop offset="1" stopColor="#6b4a10" />
+            </linearGradient>
+            <radialGradient id="bulbOn" cx="0.5" cy="0.45" r="0.6">
+              <stop offset="0" stopColor="#fff7d6" />
+              <stop offset="0.6" stopColor="#fde68a" />
+              <stop offset="1" stopColor="#f59e0b" />
+            </radialGradient>
+            <radialGradient id="bulbOff" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0" stopColor="#6b7280" />
+              <stop offset="1" stopColor="#374151" />
+            </radialGradient>
+            <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0" stopColor="#fde68a" stopOpacity="0.9" />
+              <stop offset="0.55" stopColor="#f59e0b" stopOpacity="0.35" />
+              <stop offset="1" stopColor="#f59e0b" stopOpacity="0" />
+            </radialGradient>
+          </defs>
 
-        {on && <circle cx="60" cy="80" r="52" fill="url(#lamp-glow)" className="lamp-glow" />}
+          {on && <circle cx="100" cy="150" r="95" fill="url(#halo)" className="lamp-glow" />}
 
-        {/* ceiling mount + cable */}
-        <line x1="60" y1="0" x2="60" y2="30" stroke="#64748b" strokeWidth="2" />
-        <path d="M48 0 H72 L69 8 H51 Z" fill="#334155" />
+          {/* ceiling mount */}
+          <ellipse cx="100" cy="10" rx="26" ry="7" fill="url(#brass)" stroke="#2b1d08" strokeWidth="1.5" />
+          <rect x="94" y="10" width="12" height="6" fill="url(#brass)" />
 
-        {/* shade */}
-        <path
-          d="M40 30 L80 30 L94 64 L26 64 Z"
-          fill={on ? "url(#shade-on)" : "url(#shade-off)"}
-          stroke="#1e293b"
-          strokeWidth="2"
-        />
-        <line x1="60" y1="30" x2="60" y2="64" stroke="#fef3c7" strokeWidth="1.5" opacity="0.5" />
+          {/* cable */}
+          <line x1="100" y1="16" x2="100" y2="62" stroke={on ? "#8a8f98" : "#4b4f57"} strokeWidth="2.5" />
+          <circle cx="100" cy="22" r="2.5" fill="#5b5f66" />
+          <circle cx="100" cy="34" r="2.5" fill="#5b5f66" />
 
-        {/* bulb */}
-        <ellipse
-          cx="60"
-          cy="84"
-          rx="16"
-          ry="20"
-          fill={on ? "#fef3c7" : "#64748b"}
-          stroke="#1e293b"
-          strokeWidth="1.5"
-        />
-        {on && (
-          <ellipse
-            cx="60"
-            cy="84"
-            rx="16"
-            ry="20"
-            fill="none"
-            stroke="#fde68a"
-            strokeWidth="1.5"
-            className="lamp-glow-ring"
-          />
-        )}
+          {/* shade */}
+          <g className="lamp-shade-group">
+            <path d="M100 62 L66 132 L134 132 Z" fill="#241505" />
+            <path d="M100 62 L62 134 L138 134 Z" fill="url(#brassShade)" stroke="#2b1d08" strokeWidth="1.5" />
+            <ellipse cx="100" cy="134" rx="38" ry="5" fill="#7a5612" stroke="#2b1d08" strokeWidth="1" />
+            <path d="M104 62 L72 128" stroke="#ffd97a" strokeWidth="3" opacity="0.35" strokeLinecap="round" />
+          </g>
 
-        {/* pull-cord rope */}
-        <line
-          x1="60"
-          y1="106"
-          x2="60"
-          y2={on ? "134" : "138"}
-          stroke="#a16207"
-          strokeWidth="2.5"
-          className="lamp-rope"
-        />
-        <circle
-          cx="60"
-          cy={on ? "140" : "144"}
-          r="6"
-          fill="#78350f"
-          stroke="#451a03"
-          strokeWidth="1.5"
-          className="lamp-rope"
-        />
-      </svg>
+          {/* bulb */}
+          <g>
+            <ellipse cx="100" cy="150" rx="19" ry="24" fill={on ? "url(#bulbOn)" : "url(#bulbOff)"} stroke="#1a1a1a" strokeWidth="1" />
+            {on && (
+              <ellipse cx="100" cy="150" rx="19" ry="24" fill="none" stroke="#fde68a" strokeWidth="1.5" className="lamp-glow-ring" />
+            )}
+            {on && (
+              <path
+                d="M92 148 q4 -4 8 0 q4 -4 8 0"
+                stroke="#fff3c4"
+                strokeWidth="1.6"
+                fill="none"
+                strokeLinecap="round"
+                className="lamp-filament"
+              />
+            )}
+          </g>
 
-      <span
-        className={`mt-1 text-xs ${
-          on ? "text-amber-500" : "text-gray-500"
-        } group-hover:text-gray-300 transition-colors`}
-      >
-        {on ? "Pull cord to switch off" : "Pull cord to switch on"}
+          {/* pull-cord rope */}
+          <g className="lamp-rope" style={{ transformOrigin: "100px 176px" }}>
+            <line x1="100" y1="176" x2="100" y2={on ? "206" : "214"} stroke="#7a5612" strokeWidth="2" />
+            <circle cx="100" cy={on ? "214" : "222"} r="6.5" fill="#8a5a12" stroke="#2b1d08" strokeWidth="1.5" />
+            <circle cx="98.5" cy={on ? "212.5" : "220.5"} r="2" fill="#e3b84f" opacity="0.7" />
+          </g>
+        </svg>
       </span>
     </button>
   );

@@ -58,7 +58,7 @@ describe('AuthForm (page)', () => {
     expect(screen.queryByPlaceholderText('Email')).not.toBeInTheDocument();
     expect(screen.queryByPlaceholderText('Password')).not.toBeInTheDocument();
     expect(
-      screen.getByText(/login menu stays hidden until you pull the lamp cord/),
+      screen.getByText(/Pull the lamp cord to reveal the login menu/),
     ).toBeInTheDocument();
 
     pullCord();
