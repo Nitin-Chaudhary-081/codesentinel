@@ -20,6 +20,10 @@ import { api } from '@/lib/api';
 describe('AuthForm (page)', () => {
   beforeEach(() => jest.clearAllMocks());
 
+  function pullCord() {
+    fireEvent.click(screen.getByRole('button', { name: 'Turn lamp on' }));
+  }
+
   it('registers then logs in and shows dashboard', async () => {
     (api.register as jest.Mock).mockResolvedValue({});
     (api.login as jest.Mock).mockResolvedValue({ access_token: 'tok' });
@@ -30,6 +34,7 @@ describe('AuthForm (page)', () => {
       </AuthProvider>,
     );
 
+    pullCord();
     fireEvent.click(screen.getByText(/Need an account\? Register/));
     fireEvent.change(screen.getByPlaceholderText('Email'), {
       target: { value: 'a@b.com' },
@@ -41,6 +46,27 @@ describe('AuthForm (page)', () => {
 
     await waitFor(() => expect(api.register).toHaveBeenCalled());
     await waitFor(() => expect(screen.getByText('Submit Code')).toBeInTheDocument());
+  });
+
+  it('hides login fields until the lamp cord is pulled', () => {
+    render(
+      <AuthProvider>
+        <Home />
+      </AuthProvider>,
+    );
+
+    expect(screen.queryByPlaceholderText('Email')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Password')).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/login menu stays hidden until you pull the lamp cord/),
+    ).toBeInTheDocument();
+
+    pullCord();
+    expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Turn lamp off' }));
+    expect(screen.queryByPlaceholderText('Email')).not.toBeInTheDocument();
   });
 
   it('shows error on failed login', async () => {
@@ -55,6 +81,7 @@ describe('AuthForm (page)', () => {
       </AuthProvider>,
     );
 
+    pullCord();
     fireEvent.change(screen.getByPlaceholderText('Email'), {
       target: { value: 'a@b.com' },
     });

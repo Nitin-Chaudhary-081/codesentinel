@@ -6,6 +6,7 @@ import { api } from "@/lib/api";
 import SubmissionForm from "@/components/SubmissionForm";
 import SubmissionList from "@/components/SubmissionList";
 import ReportViewer from "@/components/ReportViewer";
+import LampToggle from "@/components/LampToggle";
 
 export default function Home() {
   const { token, email, setAuth, clearAuth } = useAuth();
@@ -65,6 +66,7 @@ function AuthForm({ onAuth }: { onAuth: (token: string, email: string) => void }
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [lampOn, setLampOn] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,43 +87,51 @@ function AuthForm({ onAuth }: { onAuth: (token: string, email: string) => void }
 
   return (
     <main className="min-h-screen flex items-center justify-center p-8">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md flex flex-col items-center">
         <h1 className="text-3xl font-bold text-center mb-2">CodeSentinel</h1>
-        <p className="text-gray-500 text-center mb-8">AI Code Review Platform</p>
+        <p className="text-gray-500 text-center mb-6">AI Code Review Platform</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full border rounded-lg px-4 py-2"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={8}
-            className="w-full border rounded-lg px-4 py-2"
-          />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
-          >
-            {isLogin ? "Login" : "Register"}
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsLogin(!isLogin)}
-            className="w-full text-sm text-gray-500 hover:text-gray-700"
-          >
-            {isLogin ? "Need an account? Register" : "Have an account? Login"}
-          </button>
-        </form>
+        <LampToggle on={lampOn} onToggle={() => setLampOn((v) => !v)} />
+
+        {!lampOn ? (
+          <p className="text-gray-400 text-center text-sm mt-6">
+            The login menu stays hidden until you pull the lamp cord.
+          </p>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4 w-full">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full border rounded-lg px-4 py-2"
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={8}
+              className="w-full border rounded-lg px-4 py-2"
+            />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
+            >
+              {isLogin ? "Login" : "Register"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsLogin(!isLogin)}
+              className="w-full text-sm text-gray-500 hover:text-gray-700"
+            >
+              {isLogin ? "Need an account? Register" : "Have an account? Login"}
+            </button>
+          </form>
+        )}
       </div>
     </main>
   );

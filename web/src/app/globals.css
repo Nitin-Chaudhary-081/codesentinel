@@ -18,3 +18,46 @@ body {
   color: var(--foreground);
   background: var(--background);
 }
+
+@keyframes lamp-pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.lamp-glow {
+  animation: lamp-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes glow-ring {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.lamp-glow-ring {
+  animation: glow-ring 2.4s ease-in-out infinite;
+}
+
+@keyframes rope-swing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+.lamp-rope {
+  transform-origin: 60px 106px;
+}
+
+.lamp-svg:hover .lamp-rope {
+  animation: rope-swing 0.6s ease-in-out infinite;
+}

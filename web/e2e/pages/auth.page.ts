@@ -8,7 +8,15 @@ export class AuthPage {
     await this.page.goto('/');
   }
 
+  /** Turn the lamp on via its pull cord so the login menu is revealed. */
+  async pullLampCord() {
+    const lamp = this.page.getByRole('button', { name: 'Turn lamp on' });
+    await lamp.waitFor();
+    await lamp.click();
+  }
+
   async register(email: string, password: string) {
+    await this.pullLampCord();
     const toggle = this.page.getByText(/Need an account\? Register/);
     if (await toggle.isVisible().catch(() => false)) await toggle.click();
     await this.page.getByPlaceholder('Email').fill(email);
@@ -17,6 +25,7 @@ export class AuthPage {
   }
 
   async login(email: string, password: string) {
+    await this.pullLampCord();
     await this.page.getByPlaceholder('Email').fill(email);
     await this.page.getByPlaceholder('Password').fill(password);
     await this.page.getByRole('button', { name: 'Login' }).click();
