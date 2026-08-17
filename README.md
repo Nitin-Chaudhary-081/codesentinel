@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/hero.svg" width="100%" alt="CodeSentinel — AI code review and evaluation">
+</p>
+
 # CodeSentinel
 
 [![CI](https://github.com/Nitin-Chaudhary-081/codesentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/Nitin-Chaudhary-081/codesentinel/actions/workflows/ci.yml)
